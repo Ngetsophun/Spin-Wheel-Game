@@ -20,6 +20,7 @@ const orangeGradientLight = LinearGradient(
 );
 
 class TextStyles {
+  static const bodyReg10 = TextStyle(fontFamily: 'Gluten', fontSize: 10,color: orange3);
   static const bodyReg16 = TextStyle(fontFamily: 'Gluten', fontSize: 16,color: orange3);
   static const bodyReg20 = TextStyle(fontFamily: 'Gluten', fontSize: 20, color: lightOrange);
   static const bodyReg24 = TextStyle(fontFamily: 'Gluten', fontSize: 24, color: lightOrange);

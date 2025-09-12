@@ -13,25 +13,28 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  final List<int> slices = [0]; // store slices
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+          /// Background
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/background.png'),
                 fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.black54, BlendMode.darken),
+                colorFilter:
+                ColorFilter.mode(Colors.black54, BlendMode.darken),
               ),
             ),
           ),
-          Positioned(
+
+          /// Content
+          Positioned.fill(
             top: 120,
-            left: 0,
-            right: 0,
-            bottom: 10, // 👈 give it bottom constraints
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
@@ -39,11 +42,13 @@ class _SettingScreenState extends State<SettingScreen> {
                 children: [
                   GradientText(
                     'Wheel Name',
-                    style: TextStyles.bodyReg20,
+                    style: TextStyles.bodyReg24,
                     textAlign: TextAlign.center,
                     gradient: LinearGradient(colors: [orange3, orange4]),
                   ),
                   const SizedBox(height: 10),
+
+                  /// Wheel Name TextField
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50),
@@ -64,18 +69,20 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                       cursorColor: orange3,
                       decoration: InputDecoration(
-                        hintText: "Title Name",
+                        hintText: "Wheel Name",
                         hintStyle: TextStyles.bodyReg16,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 15),
                         border: InputBorder.none,
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // 👇 Wrap ListView with Expanded
+
+                  /// Dynamic List of Slices
                   Expanded(
                     child: ListView.builder(
-                      itemCount: 10, // just example
+                      itemCount: slices.length,
                       padding: EdgeInsets.zero,
                       itemBuilder: (context, index) {
                         return Padding(
@@ -98,6 +105,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                   child: Row(
                                     children: [
                                       Expanded(
+                                        flex: 2,
                                         child: TextField(
                                           style: const TextStyle(
                                             fontSize: 16,
@@ -108,12 +116,16 @@ class _SettingScreenState extends State<SettingScreen> {
                                           decoration: InputDecoration(
                                             hintText: "Title Name",
                                             hintStyle: TextStyles.bodyReg16,
-                                            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                            contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                                vertical: 15),
                                             border: InputBorder.none,
                                           ),
                                         ),
                                       ),
                                       Expanded(
+                                        flex: 1,
                                         child: TextField(
                                           style: const TextStyle(
                                             fontSize: 16,
@@ -123,12 +135,16 @@ class _SettingScreenState extends State<SettingScreen> {
                                           cursorColor: orange3,
                                           keyboardType: TextInputType.number,
                                           inputFormatters: [
-                                            FilteringTextInputFormatter.digitsOnly,
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
                                           ],
                                           decoration: InputDecoration(
                                             hintText: "Percent",
                                             hintStyle: TextStyles.bodyReg16,
-                                            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                            contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                                vertical: 15),
                                             border: InputBorder.none,
                                           ),
                                         ),
@@ -139,6 +155,11 @@ class _SettingScreenState extends State<SettingScreen> {
                               ),
                               const SizedBox(width: 10),
                               ZoomTapAnimation(
+                                onTap: () {
+                                  setState(() {
+                                    slices.removeAt(index);
+                                  });
+                                },
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
@@ -146,6 +167,8 @@ class _SettingScreenState extends State<SettingScreen> {
                                   ),
                                   height: 50,
                                   width: 50,
+                                  child: const Icon(Icons.delete,
+                                      color: Colors.red),
                                 ),
                               ),
                             ],
@@ -154,41 +177,59 @@ class _SettingScreenState extends State<SettingScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  ZoomTapAnimation(
-                    child: GradientText(
-                      'Add Wheel Slice',
-                      style: TextStyles.bodyReg20,
-                      textAlign: TextAlign.end,
-                      gradient: LinearGradient(colors: [orange3, orange4]),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ZoomTapAnimation(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.white,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                        child: GradientText(
-                          'Create Wheel',
-                          style: TextStyles.bodyReg20,
-                          textAlign: TextAlign.end,
-                          gradient: LinearGradient(colors: [orange3, orange4]),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
           ),
 
+          /// Add Wheel Slice (bottom right)
+          Positioned(
+            bottom: 90,
+            right: 20,
+            child: ZoomTapAnimation(
+              onTap: () {
+                setState(() {
+                  slices.add(slices.length);
+                });
+              },
+              child: GradientText(
+                'Add Wheel Slice',
+                style: TextStyles.bodyReg16,
+                gradient: LinearGradient(colors: [orange3, orange4]),
+              ),
+            ),
+          ),
+
+          /// Create Wheel (bottom center)
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: ZoomTapAnimation(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.white,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 10),
+                    child: GradientText(
+                      'Create Wheel',
+                      style: TextStyles.bodyReg20,
+                      gradient: LinearGradient(colors: [orange3, orange4]),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          /// Back button (top right)
           Positioned(
             top: 70,
             right: 10,
@@ -202,16 +243,11 @@ class _SettingScreenState extends State<SettingScreen> {
                   color: Colors.white,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 15.0,
-                    right: 15,
-                    bottom: 8,
-                    top: 8,
-                  ),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 15, vertical: 8),
                   child: GradientText(
                     'Back',
                     style: TextStyles.bodyReg20,
-                    textAlign: TextAlign.end,
                     gradient: LinearGradient(colors: [orange3, orange4]),
                   ),
                 ),
@@ -223,100 +259,3 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-//
-// class SettingScreen extends StatefulWidget {
-//   const SettingScreen({super.key});
-//
-//   @override
-//   State<SettingScreen> createState() => _SettingScreenState();
-// }
-//
-// class _SettingScreenState extends State<SettingScreen> {
-//   List<TextEditingController> prizeControllers = [];
-//   List<TextEditingController> probabilityControllers = [];
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Example initial values
-//     final prizes = ["200", "100", "50", "20", "10", "5", "1", "Try Again"];
-//     final probabilities = [0, 1, 1, 1, 1, 2, 23, 70];
-//
-//     for (int i = 0; i < prizes.length; i++) {
-//       prizeControllers.add(TextEditingController(text: prizes[i]));
-//       probabilityControllers.add(TextEditingController(text: probabilities[i].toString()));
-//     }
-//   }
-//
-//   @override
-//   void dispose() {
-//     for (var c in prizeControllers) {
-//       c.dispose();
-//     }
-//     for (var c in probabilityControllers) {
-//       c.dispose();
-//     }
-//     super.dispose();
-//   }
-//
-//   void addPrize() {
-//     setState(() {
-//       prizeControllers.add(TextEditingController());
-//       probabilityControllers.add(TextEditingController(text: "1"));
-//     });
-//   }
-//
-//   void saveSettings() {
-//     final prizes = prizeControllers.map((c) => c.text).toList();
-//     final probabilities = probabilityControllers.map((c) => int.tryParse(c.text) ?? 0).toList();
-//
-//     print("🎯 Prizes: $prizes");
-//     print("🎯 Probabilities: $probabilities");
-//
-//     // TODO: Pass this back or save to storage
-//     Navigator.pop(context, {"prizes": prizes, "probabilities": probabilities});
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Container(
-//         child: ListView.builder(
-//           itemCount: prizeControllers.length,
-//           itemBuilder: (context, index) {
-//             return Container(
-//               margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-//               child: ListTile(
-//                 leading: IconButton(
-//                   icon: const Icon(Icons.delete, color: Colors.red),
-//                   onPressed: () {
-//                     setState(() {
-//                       prizeControllers.removeAt(index);
-//                       probabilityControllers.removeAt(index);
-//                     });
-//                   },
-//                 ),
-//                 title: TextField(
-//                   controller: prizeControllers[index],
-//                   decoration: const InputDecoration(labelText: "Prize"),
-//                 ),
-//                 subtitle: TextField(
-//                   controller: probabilityControllers[index],
-//                   keyboardType: TextInputType.number,
-//                   decoration: const InputDecoration(labelText: "Probability"),
-//                 ),
-//               ),
-//             );
-//           },
-//         ),
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: addPrize,
-//         backgroundColor: Colors.deepOrange,
-//         child: const Icon(Icons.add),
-//       ),
-//     );
-//   }
-// }
