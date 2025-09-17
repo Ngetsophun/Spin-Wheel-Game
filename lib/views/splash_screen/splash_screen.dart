@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../utils/gradient_text.dart';
 import '../../utils/style.dart';
 import '../home_screen/home_screen.dart';
+import '../spin_wheel_screen/spin_wheel_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -51,89 +53,96 @@ class _SplashScreenState extends State<SplashScreen>
 
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const HomeScreen()),
+            MaterialPageRoute(builder: (_) => const SpinWheelScreen()), //HomeScreen
           );
         }
       });
     });
   }
-
+  // ConfigRouter.pushPage(context, SpinWheelScreen());
   @override
   Widget build(BuildContext context) {
-    const backgroundUrl =
-        "https://static.vecteezy.com/system/resources/previews/001/923/668/non_2x/casino-spinning-fortune-wheel-banner-template-vector.jpg";
+    return  AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent, // Or match your background
+        statusBarIconBrightness: Brightness.light, // Icons will be white
+        statusBarBrightness: Brightness.dark, // For iOS
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          /// Background image
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/background.png'),
-                fit: BoxFit.cover,
-                colorFilter: const ColorFilter.mode(
-                  Colors.black54,
-                  BlendMode.darken,
+        systemNavigationBarColor: Colors.black,
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        body: Stack(
+          children: [
+            /// Background image
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/background.png'),
+                  fit: BoxFit.cover,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.black54,
+                    BlendMode.darken,
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            top: 90,
-            left: 0,
-            right: 0,
-            child: GradientText(
-              "Welcome To Cana Fortune Wheel",
-              style: TextStyles.bodyReg40,
-              gradient: const LinearGradient(colors: [orange3, orange4]),
+            Positioned(
+              top: 90,
+              left: 0,
+              right: 0,
+              child: GradientText(
+                "Welcome To Cana Fortune Wheel",
+                style: TextStyles.bodyReg40,
+                gradient: const LinearGradient(colors: [orange3, orange4]),
+              ),
+              //child: Image.asset('assets/images/title.png',),
             ),
-            //child: Image.asset('assets/images/title.png',),
-          ),
 
-          Positioned(
-            bottom: 40,
-            left: 30,
-            right: 30,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    /// 🔹 Animated "Loading..."
-                    FadeTransition(
-                      opacity: _loadingFade,
-                      child: GradientText(
-                        'Loading...',
+            Positioned(
+              bottom: 40,
+              left: 30,
+              right: 30,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      /// 🔹 Animated "Loading..."
+                      FadeTransition(
+                        opacity: _loadingFade,
+                        child: GradientText(
+                          'Loading...',
+                          style: TextStyles.bodyReg16,
+                          gradient: const LinearGradient(
+                            colors: [orange3, orange4],
+                          ),
+                        ),
+                      ),
+
+                      /// 🔹 Progress Percentage
+                      GradientText(
+                        "${progress.toInt()}%",
                         style: TextStyles.bodyReg16,
                         gradient: const LinearGradient(
                           colors: [orange3, orange4],
                         ),
                       ),
-                    ),
-
-                    /// 🔹 Progress Percentage
-                    GradientText(
-                      "${progress.toInt()}%",
-                      style: TextStyles.bodyReg16,
-                      gradient: const LinearGradient(
-                        colors: [orange3, orange4],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                LinearProgressIndicator(
-                  value: progress / 100,
-                  minHeight: 8,
-                  backgroundColor: Colors.white,
-                  color: Color(0xffb97f11),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ],
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  LinearProgressIndicator(
+                    value: progress / 100,
+                    minHeight: 8,
+                    backgroundColor: Colors.white,
+                    color: Color(0xffb97f11),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

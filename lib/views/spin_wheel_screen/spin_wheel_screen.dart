@@ -9,9 +9,11 @@ import 'package:spin_wheel_canadia/views/home_screen/widget/spin_button.dart';
 import 'package:spin_wheel_canadia/views/setting/setting_screen.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
+import '../../utils/custom_app_bar/main_app_bar_screen.dart';
 import '../../utils/gradient_text.dart';
 import '../../utils/style.dart';
 import '../term_condition/term_condition_screen.dart';
+import 'create_spin_wheel_screen/create_spin_wheel_screen.dart';
 
 class SpinWheelScreen extends StatefulWidget {
   const SpinWheelScreen({super.key});
@@ -111,131 +113,108 @@ class _SpinWheelScreenState extends State<SpinWheelScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final wheelSize = screenWidth * 0.8;
+    final wheelSize = screenWidth * 0.9;
     final adjustedWheelSize = screenWidth > 650 ? 520.0 : wheelSize;
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/background.png'),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(Colors.black54, BlendMode.darken),
-              ),
-            ),
-          ),
-
-          ///===================  🔹 Title
-          Positioned(
-            top: 110,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              'assets/images/fortune_wheel_title.png',
-              width: 150,
-              height: 120,
-            ),
-          ),
-          Positioned(
-            top: 70,
-            left: 0,
-            right: 20,
+      body: mainAppBar(
+        context: context,
+        appBarTitle: "Fortune Wheel",
+        iconRight: Padding(
+          padding: const EdgeInsets.only(right: 5.0),
+          child: InkWell(
+            onTap: (){
+              ConfigRouter.pushPage(context, CreateSpinWheelScreen());
+            },
             child: ZoomTapAnimation(
-              onTap: () {
-                ConfigRouter.pushPage(context, SettingScreen());
-              },
-              child: GradientText(
-                "Setting",
-                textAlign: TextAlign.end,
-                style: TextStyles.bodyReg20,
-                gradient: LinearGradient(colors: const [orange3, orange4]),
+              child: Text(
+                'Setting',
+                style: TextStyles.bodyReg20.copyWith(color: Colors.white),
               ),
             ),
-
           ),
-
-          Center(
-            child: SizedBox(
-              height: adjustedWheelSize,
-              width: adjustedWheelSize,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    height: adjustedWheelSize * 0.93,
-                    child: FortuneWheel(
-                      indicators: const [],
-                      selected: controller.stream,
-                      items: [
-                        for (int i = 0; i < prizes.length; i++)
-                          FortuneItem(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GradientText(
-                                  prizes[i] == "Try Again"
-                                      ? prizes[i]
-                                      : "\$ ${prizes[i]}",
-                                  style: TextStyles.bodyReg20,
-                                  gradient: LinearGradient(
-                                    colors: const [orange3, orange4],
-                                  ),
+        ),
+        backClick: () {
+          Navigator.pop(context);
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(top: 15.0),
+          child: Column(
+            children: [
+              Image.asset('assets/images/fortune_wheel_title.png'),
+              SizedBox(
+                height: adjustedWheelSize,
+                width: adjustedWheelSize,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox(
+                      height: adjustedWheelSize * 0.8,
+                      child: FortuneWheel(
+                        indicators: const [],
+                        selected: controller.stream,
+                        items: [
+                          for (int i = 0; i < prizes.length; i++)
+                            FortuneItem(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 25.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    i.isEven
+                                        // Even index -> white background, use gradient text
+                                        ? GradientText(
+                                            prizes[i] == "Try Again"
+                                                ? prizes[i]
+                                                : "\$ ${prizes[i]}",
+                                            style: TextStyles.bodyReg20,
+                                            gradient: const LinearGradient(
+                                              colors: [orange3, orange4],
+                                            ),
+                                          )
+                                        : Text(
+                                            prizes[i] == "Try Again"
+                                                ? prizes[i]
+                                                : "\$ ${prizes[i]}",
+                                            style: TextStyles.bodyReg20
+                                                .copyWith(color: Colors.white),
+                                          ),
+                                  ],
                                 ),
-                              ],
+                              ),
+                              style: FortuneItemStyle(
+                                borderColor: Colors.red,
+                                color: i.isEven ? Colors.white : Colors.red,
+                                borderWidth: 2,
+                              ),
                             ),
-                            style: FortuneItemStyle(
-                              borderColor: Colors.red,
-                              color: i.isEven ? Colors.white : Colors.red,
-                              borderWidth: 2,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Image.asset(
-                        'assets/images/bordb.png',
-                        width: adjustedWheelSize,
-                        height: adjustedWheelSize,
+                        ],
                       ),
                     ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.amber,
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          'assets/images/lucky_wheel_green.png',
+                          width: adjustedWheelSize,
+                          height: adjustedWheelSize,
                         ),
-                        height: 40,
-                        width: 40,
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+              Spacer(),
+              Container(
+                padding: EdgeInsets.only(left: 70, right: 70, bottom: 30),
+                child: SpinButton(enabled: !isSpinning, onTap: spinWheel),
+              ),
+            ],
           ),
-          const SizedBox(height: 60),
-          Positioned(
-            bottom: 50,
-            left: 70,
-            right: 70,
-            child: SpinButton(enabled: !isSpinning, onTap: spinWheel),
-          ),
-        ],
+        ),
       ),
     );
   }
