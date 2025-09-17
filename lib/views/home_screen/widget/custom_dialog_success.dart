@@ -45,7 +45,7 @@ class _CustomDialogSuccessState extends State<CustomDialogSuccess> {
               children: [
                
                 widget.price == "Try Again"
-                    ? Image.asset('assets/images/jackpot.png',)
+                    ? SizedBox.shrink()
                     : Image.asset('assets/images/congrats.png',),
                 const SizedBox(height: 20),
                 GradientText(

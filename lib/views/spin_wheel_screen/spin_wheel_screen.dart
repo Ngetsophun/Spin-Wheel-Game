@@ -113,8 +113,114 @@ class _SpinWheelScreenState extends State<SpinWheelScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final wheelSize = screenWidth * 0.9;
+    final screenHeight= MediaQuery.of(context).size.height;
+    final wheelSize = screenWidth * 1.02;
     final adjustedWheelSize = screenWidth > 650 ? 520.0 : wheelSize;
+    return Scaffold(
+     body: Stack(
+       children: [
+         SizedBox(
+           width: MediaQuery.of(context).size.width,
+           child: Image.asset(
+             "assets/images/background.png",
+             fit: BoxFit.cover,
+           ),
+         ),
+         Positioned(
+           left: 0,right: 0,
+           top: 10,
+           bottom: 10,
+           child: Column(
+             crossAxisAlignment: CrossAxisAlignment.center,
+             mainAxisAlignment: MainAxisAlignment.center,
+             children: [
+               // Image.asset('assets/images/fortune_wheel_title.png',width: screenWidth * 0.7,height: screenHeight * 0.15,),
+
+               Flexible(
+                 child: GradientText(
+                   "CANADIA FORTUNE WHEEL",
+                   style: TextStyles.bodyReg40,
+                   gradient: const LinearGradient(colors: [orange3, orange4]),
+                 ),
+               ),
+               SizedBox(
+                 height: adjustedWheelSize,
+                 width: adjustedWheelSize,
+                 child: Stack(
+                   alignment: Alignment.center,
+                   children: [
+                     SizedBox(
+                       height: adjustedWheelSize * 0.8,
+                       child: FortuneWheel(
+                         indicators: const [],
+                         selected: controller.stream,
+                         items: [
+                           for (int i = 0; i < prizes.length; i++)
+                             FortuneItem(
+                               child: Padding(
+                                 padding: const EdgeInsets.only(left: 25.0),
+                                 child: Row(
+                                   mainAxisAlignment: MainAxisAlignment.center,
+                                   children: [
+                                     i.isEven
+                                     // Even index -> white background, use gradient text
+                                         ? GradientText(
+                                       prizes[i] == "Try Again"
+                                           ? prizes[i]
+                                           : "\$ ${prizes[i]}",
+                                       style: TextStyles.bodyReg20,
+                                       gradient: const LinearGradient(
+                                         colors: [orange3, orange4],
+                                       ),
+                                     )
+                                         : Text(
+                                       prizes[i] == "Try Again"
+                                           ? prizes[i]
+                                           : "\$ ${prizes[i]}",
+                                       style: TextStyles.bodyReg20
+                                           .copyWith(color: Colors.white),
+                                     ),
+                                   ],
+                                 ),
+                               ),
+                               style: FortuneItemStyle(
+                                 borderColor: Colors.red,
+                                 color: i.isEven ? Colors.white : Colors.red,
+                                 borderWidth: 2,
+                               ),
+                             ),
+                         ],
+                       ),
+                     ),
+                     Positioned(
+                       top: 0,
+                       bottom: 0,
+                       left: 0,
+                       right: 0,
+                       child: Align(
+                         alignment: Alignment.center,
+                         child: Image.asset(
+                           'assets/images/lucky_wheel_green.png',
+                           width: adjustedWheelSize,
+                           height: adjustedWheelSize,
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+               ),
+
+               Flexible(
+                 child: SizedBox(
+                   width: screenWidth > 650 ? 300 :250,
+                   child: SpinButton(enabled: !isSpinning, onTap: spinWheel),
+                 ),
+               ),
+             ],
+           ),),
+       ],
+     ),
+    );
     return Scaffold(
       body: mainAppBar(
         context: context,
